@@ -25,7 +25,7 @@ jobs:
       run: ./init.sh
 
     - name: Build
-      run: go build -v ./server
+      run: go build -v ./go-simple
 
     - name: Test
-      run: go test -v ./server
+      run: go test -v ./go-simple
