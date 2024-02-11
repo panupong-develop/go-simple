@@ -1,14 +1,6 @@
-package internal
+package ping
 
 import "github.com/panupong-develop/go-simple/configs"
-
-// Domain
-
-type Pong struct {
-	AppName string
-	Version string
-	Message string
-}
 
 // Application
 
