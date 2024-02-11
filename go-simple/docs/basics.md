@@ -1109,6 +1109,126 @@ func writeResource(id int){
 
 ---
 # Channels
+* Hold Data
+* Thread Safe
+* Listen for Data (Blocking main thread but It might wait forever)
+* Channel is iterable
+* `c<-` for sending data
+* `<-c` for reading data
+
+## Un-Buffered Channel
+**The Channel is waiting for the receiver forever**
+```
+var c = make(chan int)
+c <- 1                <--- wait deadlock! no receiver in this thread
+var i = <- c          <--- receiver is after your wait!
+```
+> Un-buffered channels are channels without any capacity for storing values. It will block until another goroutine is ready to receive/send that value. fatal error: all goroutines are asleep - deadlock!
+
+**The Channel value setting should not block the main thread**
+```
+var c = make(chan int)
+go func(){
+  c <- 1             <--- wait here but in the different thread
+}()
+<-c                  <--- block, waiting for the result
+```
+
+**Always use make() to avoid nil channel**
+```
+var ch chan int
+ch <- 1
+```
+> fatal error: all goroutines are asleep - deadlock!
+Sending or receiving from a nil channel will block forever
+
+**The un-buffered channel is never closed until you close it**
+```
+var c = make(chan int)
+go process(c)
+for r := range c{       <--- deadlock! again
+  ...
+}
+
+func process(c chan int){
+  for i:=0; i<5; i++ {
+    c <- 1
+  }
+}
+```
+> after reading all values from the un-buffered channel, it keeps waiting for the next result since the channel is still opening.
+
+```
+func process(c chan int){
+  defer close(c)        <--- we need to close it for a stop.
+  for i:=0; i<5; i++ {
+    c <- 1
+  }
+                        <--- done, wait for the main to close
+}
+```
+
+ok is false if there are no more values to receive and the channel is closed.
+```
+v, ok := <-ch
+```
+
+## Buffer Channel
+* More efficient
+* The task doesn't need to hang around waiting for the main thread to exit
+```
+var c = make(chan int, 5)
+
+func process(c chan int){
+  defer close(c)        <--- we need to close it for a stop.
+  for i:=0; i<5; i++ {
+    c <- 1
+  }
+                        <--- done & exit, do not wait the main thead
+}
+```
+
+## Example
+* Chicken Cheap Price Checker
+```
+var webChannel = make(chan string)
+var websites = []string{"walmart.com", "costco.com", "wholefood.com"}
+
+// Spawn 3 Goroutines
+for i := range websites{
+  go checkChickenPrices(website[i], webChannel)
+}
+
+// Block, only waiting for the first deal then exit.
+fmt.Printf("Found a chicken deal at %s", <-webChannel)
+```
+
+## Tricks
+**A Select trick to select the value**
+```
+select{
+  case website := <- chickenChannel:
+    fmt.Printf("Found deal on chicken at %v", website)
+  case website := <- tofuChannel:
+    fmt.Printf("Found deal on tofu at %v", website)
+}
+```
+
+**Select**
+https://go.dev/tour/concurrency/5
+
+**Channel trick as a WorkGroup**
+* We can use channels to synchronize execution across goroutines like a WorkGroup.
+```
+func worker(isDone chan bool){
+  ...
+  done <- true
+}
+
+isDone := make(chan bool, 1)
+go worker(isDone)
+<- isDone               <--- Block main thead, Wait for the result!
+```
 
 
 ---
