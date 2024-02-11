@@ -1,8 +1,8 @@
 package internal
 
 import (
-	"github.com/panupong-develop/goapi/server/configs"
-	"github.com/panupong-develop/goapi/server/pkg/logging"
+	"github.com/panupong-develop/go-simple/configs"
+	"github.com/panupong-develop/go-simple/pkg/logging"
 	"go.uber.org/zap"
 )
 

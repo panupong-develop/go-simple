@@ -1,6 +1,6 @@
 package internal
 
-import "github.com/panupong-develop/goapi/server/configs"
+import "github.com/panupong-develop/go-simple/configs"
 
 // Domain
 

@@ -2,8 +2,8 @@ package v1
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/panupong-develop/goapi/server/internal"
-	pkg "github.com/panupong-develop/goapi/server/pkg/http_response"
+	"github.com/panupong-develop/go-simple/internal"
+	pkg "github.com/panupong-develop/go-simple/pkg/http_response"
 )
 
 func PingHandler(ctx *fiber.Ctx) error {

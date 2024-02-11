@@ -7,11 +7,11 @@ import (
 	"os"
 
 	"github.com/gofiber/fiber/v2"
-	api "github.com/panupong-develop/goapi/server/api"
-	v1 "github.com/panupong-develop/goapi/server/api/v1"
-	"github.com/panupong-develop/goapi/server/configs"
-	"github.com/panupong-develop/goapi/server/pkg"
-	"github.com/panupong-develop/goapi/server/pkg/database"
+	api "github.com/panupong-develop/go-simple/api"
+	v1 "github.com/panupong-develop/go-simple/api/v1"
+	"github.com/panupong-develop/go-simple/configs"
+	"github.com/panupong-develop/go-simple/pkg"
+	"github.com/panupong-develop/go-simple/pkg/database"
 )
 
 type fiberApp struct {
