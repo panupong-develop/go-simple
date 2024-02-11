@@ -1,0 +1,27 @@
+app:
+  environment: "development"
+  host: 127.0.0.1
+  port: 3000
+  name: "ecommerce"
+  version: "v0.1.0"
+  read-timeout: 0
+  write-timeout: 0
+  api-key: "qRNJ3dsxVGdZqRNJ3dsxVGdZqRNJ3dsxVGdZqRNJ3dsxVGdZ"
+  admin-key: "nCFeFtj6GIIxqEdg"
+  body-limit-bytes: 10490000
+  file-limit-bytes: 20970000
+  gcp-url: "unknown"
+  file-log-path: "server.log"
+database:
+  host: "db"
+  user: "postgres"
+  password: "postgres"
+  name: "postgres"
+  protocol: "tcp"
+  port: 5432
+  ssl-mode: "disable"
+  max-connections: 25
+jwt:
+  secret-key: "szpgwdlqu3ruqrnj3dsxvgdzqrnj3dsxvgdz"
+  access-expires: 86400
+  refresh-expires: 604800
