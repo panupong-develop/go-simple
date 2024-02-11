@@ -1,6 +1,6 @@
 module github.com/panupong-develop/go-simple
 
-go 1.21.3
+go 1.21.6
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
