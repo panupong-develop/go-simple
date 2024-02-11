@@ -7,6 +7,28 @@
 	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 	"features": {
 		"ghcr.io/devcontainers/features/go:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"streetsidesoftware.code-spell-checker",
+				"BitBelt.converttoasciiart",
+				"golang.go",
+				"znck.grammarly",
+				"yzhang.markdown-all-in-one",
+				"bierner.markdown-preview-github-styles",
+				"ftonato.password-generator",
+				"tldraw-org.tldraw-vscode",
+				"uppernauts.typeit",
+				"marcos-gomes-neto.typing-simulator",
+				"ms-vscode-remote.remote-containers",
+				"ms-azuretools.vscode-docker",
+				"VisualStudioExptTeam.vscodeintellicode",
+				"hedhyw.golang-gherkingen",
+				"redhat.vscode-yaml",
+				"qwtel.sqlite-viewer"
+			]
+		}
 	}
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
