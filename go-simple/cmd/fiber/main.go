@@ -10,8 +10,8 @@ import (
 	api "github.com/panupong-develop/go-simple/api"
 	v1 "github.com/panupong-develop/go-simple/api/v1"
 	"github.com/panupong-develop/go-simple/configs"
-	"github.com/panupong-develop/go-simple/pkg"
 	"github.com/panupong-develop/go-simple/pkg/database"
+	"github.com/panupong-develop/go-simple/pkg/shutdown"
 )
 
 type fiberApp struct {
@@ -59,7 +59,7 @@ func main() {
 	// Handle gracefully shutdown
 	// Register channel to immediately handle signals to perform shutting down
 	c := make(chan os.Signal, 1)
-	pkg.HandleShutdownGracefully(c, app.Shutdown)
+	shutdown.HandleShutdownGracefully(c, app.Shutdown)
 
 	// Server starts listening
 	log.Println("server is starting up...")
