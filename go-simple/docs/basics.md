@@ -1,3 +1,13 @@
+```
+██████╗  █████╗ ███████╗██╗ ██████╗
+██╔══██╗██╔══██╗██╔════╝██║██╔════╝
+██████╔╝███████║███████╗██║██║     
+██╔══██╗██╔══██║╚════██║██║██║     
+██████╔╝██║  ██║███████║██║╚██████╗
+╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝ ╚═════╝
+                                   
+```
+
 # Main Points
 **1. Statically Typed Language**
 ```
@@ -376,17 +386,17 @@ m := make(map[string]int)
 m["key"]                  >> 0  (default value of int)
 
 m, ok := m["key"]         >> 0, false
+```
 
-
-// Map Nil Error
+Map Nil Error
+```
 var myMap map[string]int
 myMap["5"] = 1
-
-<Panic !>
+```
+> <Panic !>
 A nil map doesn't point to an initialized map.
 so attempting to read from or write to it will result 
 in a runtime panic.
-```
 
 ---
 # Loop
@@ -751,7 +761,7 @@ func canMakeIt(e Engine, miles uint8){
 * `&obj`: memory address value to the object
 * `*obj`: dereference (the memory address value) to get/set the object 
 * `*int32`: typing of pointer that is pointing to int32 memory address
-* Slice is a pointer to underlying array
+* Slice is a pointer to the underlying array
 
 ## TLDR: Example
 **Style 1. Copy Value**
@@ -781,7 +791,7 @@ fmt.Printf("%v", person)
 ```
 
 **Reminder: Slice is a pointer to the underlying array**
-* Copy the slice value, will copy the memory location to the underlying array!
+* Copy the slice value, means that it will copy the memory location to the underlying array!
 ```
 var slice     = []int32{1,2,3}
 var sliceCopy = slice         <--- copy
@@ -933,5 +943,175 @@ i         10      0x1b08
                   :
 ```
 
+---
+# Concurrency
+
+## Concurrency vs Parallel
+**Blocking I/O**
+```
+TASK1     TASK2     CPU1      CPU2
+-----------------------------------
+PENDING   PENDING   IDLE      -
+START     -         USE       -
+WAIT      -         USE       -
+WAIT      -         USE       -
+DONE      -         USE       -
+-         START     USE       -
+-         WAIT      USE       -
+-         WAIT      USE       -
+-         DONE      USE       -
+```
+**Concurrency**
+* Use single CPU
+* Use Thread for help in the routine check
+* Suitable for Blocking I/O tasks
+```
+TASK1     TASK2     CPU1      CPU2
+-----------------------------------
+PENDING   PENDING   IDLE      -
+START     -         USE       -
+WAIT      START     USE       -
+CHECK     WAIT      USE       -
+DONE      CHECK     USE       -
+-         DONE      USE       -
+```
+**Parallel Execution**
+* Use CPU Core
+* Suitable for real computing tasks
+```
+TASK1     TASK2     CPU1      CPU2
+-----------------------------------
+PENDING   PENDING   IDLE      IDLE
+START     START     USE       USE
+WAIT      WAIT      USE       USE
+WAIT      WAIT      USE       USE
+DONE      DONE      USE       USE
+```
+## Goroutine
+* Suitable for Blocking I/O tasks so that It can jump back and forth checking and executing the waiting I/O tasks.
+* Tasks that need CPU / Computation, This would not help much, Please consider using Parallel execution instead.
+
+**1. Starts with slow operation Blocking I/O**
+```
+var dbData = []int{1, 2, 3, 4, 5}
+
+func main() {
+  for id:=0; id<len(dbData); id++ {
+    dbFetchByID(id)          <--- Blocking I/O
+  }
+}
+```
+**2. Use Goroutine Without Wait**
+```
+var dbData = []int{1, 2, 3, 4, 5}
+
+func main() {
+  for id:=0; id<len(dbData); id++ {
+    go dbFetchByID(id)       <--- Goroutine
+  }
+}
+```
+> !!! but nothing happend?
+because the program spwarn the task in the background
+didn't wait for them to finish 
+then exited immediately.
+
+**3. Use Goroutine Should Wait for The Result**
+* use sync.WaitGroup to wait for the result, which the WaitGroup is just a counter.
+* 1. `wg.Add(1)`: Tell the WaitGroup how many tasks we have to wait, By +1 every time we spawn a new task.
+* 2. `wg.Done()`: Decrement the number of tasks every time a task is finished.
+* 3. `wg.Wait()`: Block the main thread with
+```
+var dbData = []int{1, 2, 3, 4, 5}
+var wg = sync.WaitGroup{}
+
+func main() {
+
+  // task
+  for id:=0; id<len(dbData); id++ {
+    wg.Add(1)                <--- Spawn: Increment task num
+    go dbFetchByID(id)       <--- Goroutine
+  }
+
+  // before continue
+  wg.Wait()                  <--- Wait: Block the main thread
+
+  ...
+}
+
+func dbFetchByID(id int){
+  ...
+  wg.Done()                     <--- Finished: Decrement task num
+}
+```
+
+**4. Append results to the main thread is NOT Thread Safety**
+* Not thread-safe (Race condition)
+* Multiple Goroutine will access the same resource at the same time, resulting in weird output i.e. loss of some outputs because multiple go routines modify the same memory location at the same time.
+```
+var results = []int{}
+
+...
+
+func dbFetchByID(id int){
+  ...
+  results = append(results, x)  <--- The result for the main thread
+  wg.Done()                     <--- Finished: Decrement task num
+}
+
+
+results                     >> [1, 2, 3]  Weird result!
+```
+
+**5. Use Sync.Mutex to lock the resource**
+* Lock the resource, Ask the Goroutine to wait for the other people to finish their task with the resource.
+* Control the READ, WRITE to the resource.
+* `m.Lock()`: lock the resources after calling this function
+* `m.Unlock()`: unlock the resources that we've locked previously
+* Loose performance, Destroy the concurrency benefits
+```
+var m = sync.Mutex{}
+
+func dbFetchByID(id int){
+  ...
+                                     (Waiting for somebody else)
+  m.Lock()                      <--- Lock (Block other people)
+  ...
+  results = append(results, x)
+  m.Unlock()                    <--- Unlock
+  wg.Done()
+}
+
+results                         >> [1, 2, 3, 4]  Proper result!
+```
+
+**6. Improve performance with sync.RWMutex**
+* Improve on reading
+* Don't lock reading at the same time.
+* Lock for writing and lock for somebody who tries to read the resource that is being written right now.
+```
+var m = sync.RWMutex{}
+
+func readResource(id int){
+                                      Wait for full lock only
+  m.RLock()                      <--- Lock for write, No block READ
+  fmt.Println(results)
+  m.RUnlock()                    <--- Unlock for write
+}
+
+func writeResource(id int){
+                                     Wait for all
+  m.Lock()                      <--- Full lock for all
+  results = append(results, x)
+  m.Unlock()                    <--- Unlock for all
+}
+```
+
+---
+# Channels
+
+
+---
 # Resources
 * [Learn GOLang Fast](https://www.youtube.com/watch?v=8uiZC0l4Ajw)
+****

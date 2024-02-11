@@ -2,20 +2,9 @@ package main
 
 import "fmt"
 
-func sum(num *[2]int32) {
-	fmt.Println("Inside func")
-	fmt.Printf("0: %p\n", &num[0])
-	fmt.Printf("1: %p\n", &num[1])
-}
-
 // Default main.go
 func main() {
-	var numArr = [2]int32{1, 2}
-	fmt.Printf("0: %p\n", &numArr[0])
-	fmt.Printf("1: %p\n", &numArr[1])
-
-	sum(&numArr)
-
+	fmt.Println("Hello, World!")
 	// fatal error: all goroutines are asleep - deadlock!
 	// Sending or receiving from a nil channel will block forever
 	// var ch chan int
