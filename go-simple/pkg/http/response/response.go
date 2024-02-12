@@ -1,4 +1,4 @@
-package http_response
+package response
 
 // Implement Your Own Response Handler
 // And use functions that we provide belows

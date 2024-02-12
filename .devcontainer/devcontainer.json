@@ -26,7 +26,8 @@
 				"VisualStudioExptTeam.vscodeintellicode",
 				"hedhyw.golang-gherkingen",
 				"redhat.vscode-yaml",
-				"qwtel.sqlite-viewer"
+				"qwtel.sqlite-viewer",
+				"bierner.markdown-mermaid"
 			]
 		}
 	}
