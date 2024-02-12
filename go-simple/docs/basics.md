@@ -1303,6 +1303,13 @@ type car [T gasEngine | electricEngine]struct{
   Model string
   engine T
 }
+
+var electricCar = car[electricEngine]{
+  ...
+  engine: electricEngine{
+    ...
+  }
+}
 ```
 
 ---
