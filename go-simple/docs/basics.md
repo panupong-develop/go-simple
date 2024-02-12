@@ -1205,20 +1205,38 @@ fmt.Printf("Found a chicken deal at %s", <-webChannel)
 
 ## Tricks
 **A Select trick to select the value**
+- Select blocks until one of its cases can run, and then it executes that case. It chooses one at random if multiple are ready.
 ```
 select{
-  case website := <- chickenChannel:
-    fmt.Printf("Found deal on chicken at %v", website)
-  case website := <- tofuChannel:
-    fmt.Printf("Found deal on tofu at %v", website)
+case website := <- chickenChannel:
+  fmt.Printf("Found deal on chicken at %v", website)
+case website := <- tofuChannel:
+  fmt.Printf("Found deal on tofu at %v", website)
+case <-quit:
+  fmt.Println("quit")
+    return
 }
+
+go func() {
+  for i := range websites{
+    go checkChickenPrices(website[i], webChannel)
+  }
+  quit <- 0
+}()
+
+>>
+Found deal on chicken at walmart.com
+quit
 ```
 
 **Select**
 https://go.dev/tour/concurrency/5
+```
+# **TODO**
+```
 
 **Channel trick as a WorkGroup**
-* We can use channels to synchronize execution across goroutines like a WorkGroup.
+- We can use channels to synchronize execution across goroutines like a WorkGroup.
 ```
 func worker(isDone chan bool){
   ...
@@ -1230,6 +1248,62 @@ go worker(isDone)
 <- isDone               <--- Block main thead, Wait for the result!
 ```
 
+---
+# Generic Type
+* `T x|y|z`
+* any type; If your code performs things that all type interfaces can do, It's fine. But remember that not all types can perform your program operations
+```
+             |-----------T-------------|
+func sumSlice[T int | float32 | float64](slice []T) T {
+  var sum T
+  for _, v := range slice{
+    sum += v
+  }
+  return sum
+}
+
+intSlice = []int{1,2,3}
+sumSlice[int]( intSlice )
+          ^----- T
+```
+
+**'any' means It works for all types**
+```
+func isEmpty[T any](slice []T) bool{
+  return len(slice)==0
+}
+
+isEmpty(intSlice)
+       ^----- Don't need to specify T
+```
+
+**Struct type as T**
+```
+type contactInfo struct{
+  Name  string
+  Email string
+}
+
+
+func loadJSON[T contactInfo | ...](filePath string) []T {
+  data, _ = ioutil.ReadFile(filePath)
+  var loaded = []T{}
+  json.Unmarshal(data, &loaded)
+  return loaded
+}
+
+
+filePath := "./contactInfo.json"
+var contacts []contactInfo = loadJSON[contactInfo]( filePath )
+```
+
+**Generic inside the struct**
+```
+type car [T gasEngine | electricEngine]struct{
+  Model string
+  engine T
+}
+```
 
 ---
 # Resources
