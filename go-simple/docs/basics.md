@@ -10,7 +10,7 @@
 
 # Main Points
 **1. Statically Typed Language**
-```
+```go
 n = 1
 n = "string"
 
@@ -24,7 +24,7 @@ var Number = 1          // integer
 ```
 
 **2. Strongly Typed Language**
-```
+```go
 a = 1
 b = "two"
 c = a + b
@@ -100,13 +100,14 @@ go 1.20
 
 Create main.go, go will try to find the entry point of the program which will look at 
 the `main` package and the `main()` function.
-```
+```shell
 # shell
 (workspace/module): mkdir -p cmd/basics/
 (workspace/module): cd cmd/basics/
 
 (workspace/module): touch main.go
-
+```
+```go
 x---------------------------------------x
 package main 
 
@@ -116,8 +117,7 @@ func main() {
 x---------------------------------------x
 ```
 Try to build the main.go file into an executable file
-```
-# shell
+```shell
 (workspace/module): go build cmd/basics/main.go
 
 (workspace/module): ls
@@ -156,14 +156,14 @@ var num uint8 ==> (0,   255)
 **Number Overflow Error**
 
 Build time overflow
-```
+```go
 var int8 = 127 + 1 
 
 <caution!> Overflow Error!
 ```
 
 Run-time unexpectation
-```
+```go
 var int8 = 127
 int8 = int8 + 1
 
@@ -178,7 +178,7 @@ int8 = int8 + 1
 **Floating precision**
 * use `32 bits` where precision isn't critical
 * use `64 bits` for scientific calculations, financial applications, or any domain where precision is crucial.
-```
+```go
 var num float32 = 12345678.9 >> 12345679.000 000
 var num float64 = 12345678.9 >> 12345678.900 000
 
@@ -187,26 +187,26 @@ float64 = 1.0 / 3.0 >> 0.33333333333333331483
 ```
 
 **Choosing the right data type**
-```
+```go
     0-255  0-255  0-255
 rgb(uint8, uint8, uint8)
 ```
 
 **Operations: + - * / %**
 - Cannot be a different type, we need to cast
-```
+```go
 floatNum32 + float32(intNum32)
 ```
 
 - int will round it down
-```
+```go
 fmt.Print(3/2)          >> 1
 fmt.Print(float32(3/2)) >> 1  // float32(int(1))
 ```
 
 **UTF8 Encode**
 - string (collection of runes)
-```
+```go
 var my string = "one-line"
 var my string = `multiple-
 line`
@@ -222,13 +222,13 @@ utf8.RuneCountInString("δ")  = 1
 ```
 
 **Rune (represents character)**
-```
+```go
 var myRune rune = 'a'
 myRune          = 97
 ```
 
 **Default values**
-```
+```go
 var myString string           >> ""
 var myBool bool               >> false
 var myNumber int|float|rune   >> 0
@@ -250,7 +250,7 @@ var myNumber int|float|rune   >> 0
 - Design to return `error` type with default value type is `nil` otherwise panic!
   - `err = errors.New("Something went wrong")`
 
-```
+```go
 func privateFunc(input1 type) (outputType, error) {
     return ...
 }
@@ -259,7 +259,7 @@ func privateFunc(input1 type) (outputType, error) {
 ---
 # Control flows
 **If-else statement**
-```
+```go
 if err != nil {
   ...
 } else if remainder == 0 {
@@ -273,9 +273,10 @@ if 1==1 && 2 == 2 || 3 != 3 {
   ...
 }
 ```
+
 **Switch**
 - no need to break
-```
+```go
 switch{
   case err != nil:
     ...
@@ -304,7 +305,7 @@ default:
 - Indexable (starts from 0)
 - Contiguous in Memory
 - The default value is `[]` with cap=0
-```
+```go
 // fixed length & same type value
 [LENGTH]Type
 
@@ -339,7 +340,7 @@ Accessing by index is predictable O(1)
 - `cap()`  capacity of the underlying array for this slice
 - The default value is `[]` with cap=0
 
-```
+```go
 []int32{1,2,3}      >> len=3, cap=3             <-- cap=underlying
 append(mySlice,4)   >> len=4, cap=6 (whatever)  <-- re-allocate
 
@@ -367,7 +368,7 @@ slice2 =  append(slice2, slice3...)
 - optional initialize capacity
 - resizing if exceeding the capacity
 - The default value is `nil`! Have to use `make()` instead
-```
+```go
 myMap := map[string]uint8{"key1": 1, "key2": 2}
 myMap["Key1"]       >> 1
 myMap["Key2"]       >> 2
@@ -389,7 +390,7 @@ m, ok := m["key"]         >> 0, false
 ```
 
 Map Nil Error
-```
+```go
 var myMap map[string]int
 myMap["5"] = 1
 ```
@@ -401,7 +402,7 @@ in a runtime panic.
 ---
 # Loop
 **Iterate arrays and slices**
-```
+```go
 for index, val := range [3]int{4, 5, 6} {
   ...
 }
@@ -413,7 +414,7 @@ Index: 2, Value: 6
 ```
 
 **Iterate a map**
-```
+```go
 notOrderedMap := map[string]uint8{
   "Adam":  23,
   "Sarah": 45,
@@ -433,14 +434,14 @@ Name: Adam, Age: 23
 ```
 
 **A simple for-loop**
-```
+```go
 for i:=0; i<10; i++ {
     ...
 }
 ```
 
 **While Loop**
-```
+```go
 for i<10 {
     ...
 }
@@ -451,7 +452,7 @@ for {
 ```
 
 **Performance matters**
-```
+```go
 // With pre-allocation is faster
 slice1 := make([]int, 0, 1000000)  // pre-set capacity
 t0 := time.Now()
@@ -485,7 +486,7 @@ fmt.Println(time.Since(t0))
 - Indexable (But you will get a number)
 - Immutable, Cannot modify it e.g. myStr[0] = "x"
 - The default value is `""`
-```
+```go
 myString := "rèsumè"
 
 myString[0]           %v >> 114,  %T >> uint8
@@ -504,7 +505,7 @@ m       109     1101101
 **ASCII Table**
 - 7 bits (unsigned)
 - Support 127 chars
-```
+```go
 0 null
 8 backspace
 10 new line
@@ -520,7 +521,7 @@ m       109     1101101
 - I want more bits
 - UTF-32 (32-bits) can support 1,114,112 chars
 - But it wasted a lot of memory e.g.
-```
+```go
 Character     UTF-32
 a             00000000 00000000 00000000 01100001
               |-------- wasted --------|
@@ -535,7 +536,7 @@ smile emoji   00000000 00000001 11110110 00001010
 - group the same characters as the same code (Unicode)
 - solve the issue by allowing dynamic bytes, depending on the char.
 
-```
+```go
 // Dynamically bytes (1-4)
 Character     UTF-32
 a             01100001
@@ -597,7 +598,7 @@ len("rèsumè") = 8
 - Immutable, it is used for mapping purposes!
 - **iterate over a string is a rune!**
 - The default value is `0`
-```
+```go
 []rune("résumé")    >> [114, 233, 115, 117, 109, 233]
 
 
@@ -616,7 +617,7 @@ for _, r := range str {
 - Involves memory allocation and deallocation, (costly in a loop)
 - Creates multiple intermediate strings that need to be garbage-collected eventually.
 
-```
+```go
 var catString string
 for _, v := range []string{"h", "e", "l", "l", "o"} {
   catString += v
@@ -634,7 +635,7 @@ v-------------- slow operation
 - 'Strings.Builder', on the other hand, pre-allocates memory for the final string, reducing the need for frequent memory allocations.
 - Minimizes the number of allocations and reallocations by dynamically resizing the buffer as needed.
 - Reduced Garbage Collection Overhead.
-```
+```go
 var strBuilder strings.Builder
 for _, v := range []string{"h", "e", "l", "l", "o"} {
   strBuilder.WriteString(strSlice[i])
@@ -648,7 +649,7 @@ fmt.Println(strBuilder.String())
 - Can hold Mixed-type
 - Mutable
 - Default values are `children's default value`
-```
+```go
 type Person struct{
   name   string
   age    uint8
@@ -664,7 +665,7 @@ var myPerson Person
 ```
 
 Initialize value
-```
+```go
 Person{name: "Pop", age: 30}
 Person{"Pop", 30}
 
@@ -677,7 +678,7 @@ myPerson.name = "New Pop"   <-- Mutable
 - Use a pointer receiver if the method needs to modify the struct or if you want to avoid copying the struct when calling the method, especially for large structs. Pointer receivers are useful when you want changes made within the method to be reflected in the original struct.
 
 ## Struct Composition
-```
+```go
 type Namable struct {
 	name string
 }
@@ -702,7 +703,7 @@ fmt.Print(person.GetName())
 
 ## Anonymous Struct
 * cannot be reused
-```
+```go
 var myData := struct{
   x int
   y int
@@ -712,7 +713,7 @@ var myData := struct{
 ---
 # Interface
 **Problem to solve**
-```
+```go
 type gasEngine struct{
   ...
 }
@@ -720,8 +721,8 @@ type gasEngine struct{
 func (e gasEngine) milesLeft() uint8{
   ...
 }
-```
-```
+
+
 type electricEngine struct{
   ...
 }
@@ -729,8 +730,8 @@ type electricEngine struct{
 func (e electricEngine) milesLeft() uint8{
   ...
 }
-```
-```
+
+
                  v---- too strict type!
 func canMakeIt(e gasEngine, miles uint8){
   if miles <= e.milesLeft() {
@@ -744,7 +745,7 @@ func canMakeIt(e gasEngine, miles uint8){
 **Solution**
 - Decoupling the type by its behavior
 - We only need its behavior
-```
+```go
 type Engine interface{
   milesLeft() uint8     <-- signature
 }
@@ -767,7 +768,7 @@ func canMakeIt(e Engine, miles uint8){
 **Style 1. Copy Value**
 * To Retain immutable
 * For a small object, A few copy cost
-```
+```go
 person := Person{age: 10}
 
 var p Person = person
@@ -780,7 +781,7 @@ fmt.Printf("%v", person)
 **Style 2. Reference Pointer**
 * To mutate object
 * For a large object that's expensive cost
-```
+```go
 person := Person{age: 10}
 
 var p *Person = &person
@@ -792,7 +793,7 @@ fmt.Printf("%v", person)
 
 **Reminder: Slice is a pointer to the underlying array**
 * Copy the slice value, means that it will copy the memory location to the underlying array!
-```
+```go
 var slice     = []int32{1,2,3}
 var sliceCopy = slice         <--- copy
 sliceCopy[2]  = 4
@@ -813,7 +814,7 @@ sliceCopy >> [1 2 4]  !!!
 
 **Passing the parameters**
 * is copied value by default
-```
+```go
 var numArr = [2]int32{1, 2}
 
 %p &num[0]        >> 0x400000e090
@@ -833,7 +834,7 @@ func sum(num *[2]int32) {
 ```
 
 ## Create a Pointer from scratch
-```
+```go
 var i int32
 
 x-----------------------x
@@ -848,7 +849,7 @@ i         0       0x1b08
 ```
 
 Example of Pointer in 64 bits OS (8 bytes)
-```
+```go
 var p *int32
 
 x-----------------------x
@@ -867,7 +868,7 @@ p         nil     0x1b00
 ```
 
 Assigning reference value to a pointer
-```
+```go
 var p *int32 = new(int32)
 
 x-----------------------x
@@ -892,7 +893,7 @@ i         0       :
 ```
 
 Referencing & Dereferencing
-```
+```go
 p               >> 0x1b0c
 *p              >> 0
 
@@ -905,7 +906,7 @@ p               >> 0x1b0c
 
 ## Create a Pointer from the reference
 * `&ref`
-```
+```go
 var i int32
 var p *int32 = &i
 
@@ -931,7 +932,7 @@ i         0       0x1b08 <-|
 
 Dereference and set the value
 * `*p`
-```
+```go
 *p = 10
 
 
@@ -948,7 +949,7 @@ i         10      0x1b08
 
 ## Concurrency vs Parallel
 **Blocking I/O**
-```
+```ex
 TASK1     TASK2     CPU1      CPU2
 -----------------------------------
 PENDING   PENDING   IDLE      -
@@ -965,7 +966,7 @@ DONE      -         USE       -
 * Use single CPU
 * Use Thread for help in the routine check
 * Suitable for Blocking I/O tasks
-```
+```ex
 TASK1     TASK2     CPU1      CPU2
 -----------------------------------
 PENDING   PENDING   IDLE      -
@@ -978,7 +979,7 @@ DONE      CHECK     USE       -
 **Parallel Execution**
 * Use CPU Core
 * Suitable for real computing tasks
-```
+```ex
 TASK1     TASK2     CPU1      CPU2
 -----------------------------------
 PENDING   PENDING   IDLE      IDLE
@@ -992,7 +993,7 @@ DONE      DONE      USE       USE
 * Tasks that need CPU / Computation, This would not help much, Please consider using Parallel execution instead.
 
 **1. Starts with slow operation Blocking I/O**
-```
+```go
 var dbData = []int{1, 2, 3, 4, 5}
 
 func main() {
@@ -1002,7 +1003,7 @@ func main() {
 }
 ```
 **2. Use Goroutine Without Wait**
-```
+```go
 var dbData = []int{1, 2, 3, 4, 5}
 
 func main() {
@@ -1021,7 +1022,7 @@ then exited immediately.
 * 1. `wg.Add(1)`: Tell the WaitGroup how many tasks we have to wait, By +1 every time we spawn a new task.
 * 2. `wg.Done()`: Decrement the number of tasks every time a task is finished.
 * 3. `wg.Wait()`: Block the main thread with
-```
+```go
 var dbData = []int{1, 2, 3, 4, 5}
 var wg = sync.WaitGroup{}
 
@@ -1048,7 +1049,7 @@ func dbFetchByID(id int){
 **4. Append results to the main thread is NOT Thread Safety**
 * Not thread-safe (Race condition)
 * Multiple Goroutine will access the same resource at the same time, resulting in weird output i.e. loss of some outputs because multiple go routines modify the same memory location at the same time.
-```
+```go
 var results = []int{}
 
 ...
@@ -1069,7 +1070,7 @@ results                     >> [1, 2, 3]  Weird result!
 * `m.Lock()`: lock the resources after calling this function
 * `m.Unlock()`: unlock the resources that we've locked previously
 * Loose performance, Destroy the concurrency benefits
-```
+```go
 var m = sync.Mutex{}
 
 func dbFetchByID(id int){
@@ -1089,7 +1090,7 @@ results                         >> [1, 2, 3, 4]  Proper result!
 * Improve on reading
 * Don't lock reading at the same time.
 * Lock for writing and lock for somebody who tries to read the resource that is being written right now.
-```
+```go
 var m = sync.RWMutex{}
 
 func readResource(id int){
@@ -1118,7 +1119,7 @@ func writeResource(id int){
 
 ## Un-Buffered Channel
 **The Channel is waiting for the receiver forever**
-```
+```go
 var c = make(chan int)
 c <- 1                <--- wait deadlock! no receiver in this thread
 var i = <- c          <--- receiver is after your wait!
@@ -1126,7 +1127,7 @@ var i = <- c          <--- receiver is after your wait!
 > Un-buffered channels are channels without any capacity for storing values. It will block until another goroutine is ready to receive/send that value. fatal error: all goroutines are asleep - deadlock!
 
 **The Channel value setting should not block the main thread**
-```
+```go
 var c = make(chan int)
 go func(){
   c <- 1             <--- wait here but in the different thread
@@ -1135,7 +1136,7 @@ go func(){
 ```
 
 **Always use make() to avoid nil channel**
-```
+```go
 var ch chan int
 ch <- 1
 ```
@@ -1143,7 +1144,7 @@ ch <- 1
 Sending or receiving from a nil channel will block forever
 
 **The un-buffered channel is never closed until you close it**
-```
+```go
 var c = make(chan int)
 go process(c)
 for r := range c{       <--- deadlock! again
@@ -1158,7 +1159,7 @@ func process(c chan int){
 ```
 > after reading all values from the un-buffered channel, it keeps waiting for the next result since the channel is still opening.
 
-```
+```go
 func process(c chan int){
   defer close(c)        <--- we need to close it for a stop.
   for i:=0; i<5; i++ {
@@ -1169,14 +1170,14 @@ func process(c chan int){
 ```
 
 ok is false if there are no more values to receive and the channel is closed.
-```
+```go
 v, ok := <-ch
 ```
 
 ## Buffer Channel
 * More efficient
 * The task doesn't need to hang around waiting for the main thread to exit
-```
+```go
 var c = make(chan int, 5)
 
 func process(c chan int){
@@ -1206,7 +1207,7 @@ fmt.Printf("Found a chicken deal at %s", <-webChannel)
 ## Tricks
 **A Select trick to select the value**
 - Select blocks until one of its cases can run, and then it executes that case. It chooses one at random if multiple are ready.
-```
+```go
 select{
 case website := <- chickenChannel:
   fmt.Printf("Found deal on chicken at %v", website)
@@ -1229,15 +1230,9 @@ Found deal on chicken at walmart.com
 quit
 ```
 
-**Select**
-https://go.dev/tour/concurrency/5
-```
-# **TODO**
-```
-
 **Channel trick as a WorkGroup**
 - We can use channels to synchronize execution across goroutines like a WorkGroup.
-```
+```go
 func worker(isDone chan bool){
   ...
   done <- true
@@ -1252,7 +1247,7 @@ go worker(isDone)
 # Generic Type
 * `T x|y|z`
 * any type; If your code performs things that all type interfaces can do, It's fine. But remember that not all types can perform your program operations
-```
+```go
              |-----------T-------------|
 func sumSlice[T int | float32 | float64](slice []T) T {
   var sum T
@@ -1268,7 +1263,7 @@ sumSlice[int]( intSlice )
 ```
 
 **'any' means It works for all types**
-```
+```go
 func isEmpty[T any](slice []T) bool{
   return len(slice)==0
 }
@@ -1278,7 +1273,7 @@ isEmpty(intSlice)
 ```
 
 **Struct type as T**
-```
+```go
 type contactInfo struct{
   Name  string
   Email string
@@ -1298,7 +1293,7 @@ var contacts []contactInfo = loadJSON[contactInfo]( filePath )
 ```
 
 **Generic inside the struct**
-```
+```go
 type car [T gasEngine | electricEngine]struct{
   Model string
   engine T
